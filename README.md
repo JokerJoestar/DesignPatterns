@@ -1788,6 +1788,88 @@ The **Observer** pattern typically involves:
 - Concrete Observer classes that subscribe to the subject.
 
 ### 3) **Code example:**  
+```cs
+using System;
+using System.Collections.Generic;
+
+namespace DesignPatterns.Observer
+{
+    // Step 1: Observer interface
+    interface IObserver
+    {
+        void Update(string message);
+    }
+
+    // Step 2: Subject class
+    class Subject
+    {
+        private List<IObserver> _observers = new();
+
+        public void Attach(IObserver observer)
+        {
+            _observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            _observers.Remove(observer);
+        }
+
+        public void Notify(string message)
+        {
+            foreach (var observer in _observers)
+            {
+                observer.Update(message);
+            }
+        }
+    }
+
+    // Step 3: Concrete Observers
+    class EmailAlert : IObserver
+    {
+        public void Update(string message)
+        {
+            Console.WriteLine($"Email Alert: {message}");
+        }
+    }
+
+    class SMSAlert : IObserver
+    {
+        public void Update(string message)
+        {
+            Console.WriteLine($"SMS Alert: {message}");
+        }
+    }
+
+    // Step 4: Client
+    class Program
+    {
+        static void Main()
+        {
+            var subject = new Subject();
+
+            var emailAlert = new EmailAlert();
+            var smsAlert = new SMSAlert();
+
+            subject.Attach(emailAlert);
+            subject.Attach(smsAlert);
+
+            subject.Notify("Server is down!");
+            // Output:
+            // Email Alert: Server is down!
+            // SMS Alert: Server is down!
+
+            subject.Detach(emailAlert);
+
+            subject.Notify("Server is back online!");
+            // Output:
+            // SMS Alert: Server is back online!
+
+            Console.ReadKey();
+        }
+    }
+}
+```
 
 ## State
 
